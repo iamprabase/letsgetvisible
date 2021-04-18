@@ -100,3 +100,134 @@
   <script src="{{ asset('frontend/js/mail-script.js') }}"></script>
 
   <script src="{{ asset('frontend/js/main.js')}}"></script>
+
+  <script>
+  const showLoader = () => {
+    $('.loading').removeClass('hidden');
+    $('.case_study_area').addClass('opacity');
+    $('button[type=submit]').attr("disabled", true);
+  }
+
+  const hideLoader = () => {
+    $('.loading').addClass('hidden');
+    $('.case_study_area').removeClass('opacity');
+    $('button[type=submit]').attr("disabled", false);
+  }
+
+  const validateDomain = () => {
+    let domain = $('#domain').val();
+    if(!/^(http(s)?\/\/:)?(www\.)?[a-zA-Z0-9\-]{3,}(\.[a-z]+(\.[a-z]+)?)$/.test(domain) && domain != "")
+    {
+      console.log('invalid domain name');
+      $('#domain').addClass('hasDomainError');
+      $('.errField').removeClass("hidden");
+      return false;
+    }
+    $('.errField').addClass("hidden");
+    $('#domain').removeClass('hasDomainError');
+    return true;
+  }
+  $('#domain').keyup(function(){
+    validateDomain();
+  });
+
+  const buildStatisticsView = (responseObj) => {
+    Object.keys(responseObj).map(function(element, index) {
+      if(element=="OnPage Score"){
+        $('.seoScoreDiv').html(`<div style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);opacity: 1;transform-style: preserve-3d;" class="feature-block"><h3><strong>${element}<br/> ${responseObj[element]} </strong></h3></div>`);
+      }else{
+        $('.seoDetailsDiv').append(`<div class="col-md-4">  <div class="px-4 py-5 mt-5 sm:p-6" style="background: beige;">    <h3 class="text-sm font-medium text-gray-500 truncate">${element}</h3>    <p class="mt-1 text-3xl font-semibold text-gray-600">${responseObj[element]} </p>  </div></div>`);
+      }
+    })
+  }
+
+  const getPageSummary = (action, requestId) => {
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': "{{csrf_token()}}"
+      },
+      type: 'POST',
+      url: action,
+      data: {id: requestId},
+      beforeSend: function () {
+        $('.seoScoreDiv').html("")
+        $('.seoDetailsDiv').html("")
+        showLoader();
+      },
+      success: function (response) {
+        if(response.status_code == 202){
+          setTimeout(() => {
+            getPageSummary(current[0].action, response.id)
+          }, 8000)
+          getPageSummary(action, response.id)
+          return;
+        }else if(response.status_code == 200){
+          alert(response.message);
+          let statistics = response.statistics;
+          $('.seoDetailsDiv').html("")
+          buildStatisticsView(statistics)
+          hideLoader();
+        }
+
+      },
+      error: function (xhr) {
+        hideLoader();
+        if(xhr.status == 422){
+          alert(xhr.responseJSON.errors.domain[0]);
+          return;
+        }
+        alert("Some Error Occured while processing your request.");
+      },
+      complete: function () {
+        console.log("Complete")
+      }
+    });
+  }
+
+  $('#website-form').submit(function(e){
+    e.preventDefault();
+    let canSubmitForm = validateDomain();
+    let current = $(this);
+
+    if(canSubmitForm){
+      $.ajax({
+        type: 'POST',
+        url: current[0].action,
+        data: current.formSerialize(),
+        beforeSend: function () {
+          $('.seoScoreDiv').html("")
+          $('.seoDetailsDiv').html("")
+          showLoader();
+        },
+        success: function (response) {
+          alert(response.message);
+          if(response.status_code == 202){
+            setTimeout(() => {
+              getPageSummary(current[0].action, response.id)
+            }, 10000)
+            return;
+          }else if(response.status_code == 200){
+            let statistics = response.statistics;
+            $('.seoDetailsDiv').html("")
+            buildStatisticsView(statistics)
+            hideLoader();
+          }
+
+        },
+        error: function (xhr) {
+          hideLoader();
+          if(xhr.status == 422){
+            alert(xhr.responseJSON.errors.domain[0]);
+            return;
+          }
+          alert("Some Error Occured while processing your request.");
+        },
+        complete: function () {
+          console.log("Complete")
+        }
+      });
+    }
+  });
+
+
+  </script>

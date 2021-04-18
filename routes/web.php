@@ -28,3 +28,4 @@ Route::post('/contact', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/get-quick-report', 'PageController@index')->name('quickReport');

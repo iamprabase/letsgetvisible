@@ -33,14 +33,17 @@
   </div>
 </div>
 <!-- slider_area_end -->
-
+<div class="col-md-12 loading hidden">
+  <div class="loader"></div>
+  <h3>Loading...</h3>
+</div>
 <!-- case_study_area  -->
 <div class="case_study_area case_bg_1">
   <div class="container">
     <div class="row">
       <div class="col-xl-12">
         <div class="section_title text-center mb-95" style="text-align: center;color: #747474">
-          <h3>Enter an URL address and get a Free Website Analysis!</h3>
+          <h3>Enter Domain and get a Free Website Analysis!</h3>
         </div>
       </div>
     </div>
@@ -48,26 +51,34 @@
       <div class="col-xl-12">
         <div class="row">
           <div class="col-md-12 text-center">
-            <form id="website-form">
-              <div id="row-main-top" class="form form-inline">
+            <form method="post" action="{{route('quickReport')}}" id="website-form">
+              @csrf
+              <div class="row">
                 <div class="col-md-10">
-                  <input id="domain" class="form-control search-box input-hg" name="Website[domain]" type="text"
-                    value="" placeholder="Example.com" style="
-                        width: 100%;
-                        padding: 15px 40px;
-                    ">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">https://</span>
+                    <input id="domain" class="form-control search-box input-hg" name="domain" type="text"
+                      placeholder="example.com" required>
+                  </div>
+                  <span class="errField hidden" style="color:red">Invalid Domain</span>
                 </div>
                 <div class="col-md-2">
-                  <a id="submit"
-                    class="qodef-btn qodef-btn-medium qodef-btn-solid qodef-btn-hover-animation qodef-btn-orange"
-                    target="_self" rel="noopener noreferrer"
-                    style="background-color: #ffbd4a;color:#fff;margin-top: 0!important;vertical-align: top!important;/* margin-left: 5px; */font-size: 24px;height: 70px!important;width: 100%;padding: 10px;border-radius: 6px;">
+                  <button id="submit" type="submit" class="btn btn-default">
                     <span class="qodef-btn-text">Audit</span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </form>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-5">
+      <div class="col-md-12 seoScoreDiv">
+
+      </div>
+      <div class="col-md-12">
+        <div class="row seoDetailsDiv">
         </div>
       </div>
     </div>
