@@ -157,15 +157,17 @@
       success: function (response) {
         if(response.status_code == 202){
           setTimeout(() => {
-            getPageSummary(current[0].action, response.id)
-          }, 8000)
-          getPageSummary(action, response.id)
+            getPageSummary(action, requestId)
+          }, 10000)
           return;
         }else if(response.status_code == 200){
           alert(response.message);
           let statistics = response.statistics;
           $('.seoDetailsDiv').html("")
           buildStatisticsView(statistics)
+          hideLoader();
+        }else{
+          alert(response.message);
           hideLoader();
         }
 
@@ -210,6 +212,8 @@
             let statistics = response.statistics;
             $('.seoDetailsDiv').html("")
             buildStatisticsView(statistics)
+            hideLoader();
+          }else if(response.status_code == 401){
             hideLoader();
           }
 
