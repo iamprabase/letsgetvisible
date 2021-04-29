@@ -42,7 +42,7 @@
       border-radius: 6px;
     }
 
-    #domain{
+    .search-box{
       width: 100%;
       padding: 15px 40px;
     }

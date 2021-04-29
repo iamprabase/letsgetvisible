@@ -28,4 +28,9 @@ Route::post('/contact', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/reviews', 'HomeController@reviews')->name('reviews');
+Route::get('/competitors-domain', 'HomeController@competitorsdomain')->name('competitorsdomain');
+Route::post('/competitors-domain', 'HomeController@getCompetitorsdomain')->name('getCompetitorsdomain');
+Route::post('/reviews', 'HomeController@getKeyWordReview')->name('getKeyWordReview');
+Route::get('/full-page-report/{id}', 'HomeController@fullPageStatistics')->name('fullPageStatistics');
 Route::post('/get-quick-report', 'PageController@index')->name('quickReport');

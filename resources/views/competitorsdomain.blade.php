@@ -17,7 +17,7 @@
           <div class="slider_text text-center">
             <div class="text">
               <h3>
-                SEO AUDIT REPORT
+                SERP Competitors
               </h3>
               <a class="boxed-btn3" href="#domain">Get Started</a>
             </div>
@@ -41,7 +41,7 @@
     <div class="row">
       <div class="col-xl-12">
         <div class="section_title text-center mb-95" style="text-align: center;color: #747474">
-          <h3>Enter Domain and get a Free Website Analysis!</h3>
+          <h3>Enter Keywords to get Google Reviews </h3>
         </div>
       </div>
     </div>
@@ -49,20 +49,27 @@
       <div class="col-xl-12">
         <div class="row">
           <div class="col-md-12 text-center">
-            <form method="post" action="{{route('quickReport')}}" id="website-form">
+            <form method="post" action="{{route('getCompetitorsdomain')}}" id="competitor-form">
               @csrf
               <div class="row">
-                <div class="col-md-10">
+                <div class="col-md-5">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">https://</span>
                     <input id="domain" class="form-control search-box input-hg" name="domain" type="text"
-                      placeholder="example.com" required>
+                      placeholder="Domain" required>
+                  </div>
+                  <span class="errField hidden" style="color:red">Invalid Domain</span>
+                </div>
+                <div class="col-md-5">
+                  <div class="input-group-prepend">
+                    <input id="location" class="form-control search-box input-hg" name="location" type="text"
+                      placeholder="location" required>
                   </div>
                   <span class="errField hidden" style="color:red">Invalid Domain</span>
                 </div>
                 <div class="col-md-2">
                   <button id="submit" type="submit" class="btn btn-default">
-                    <span class="qodef-btn-text">Audit</span>
+                    <span class="qodef-btn-text">Get Review</span>
                   </button>
                 </div>
               </div>

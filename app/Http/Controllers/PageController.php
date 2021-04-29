@@ -25,8 +25,9 @@ class PageController extends Controller
     public function index(Request $request)
     {
         if (!$request->has('id')) {
+            // 'domain' => 'required|regex:/^(http(s)?\/\/:)?(www\.)?[a-zA-Z0-9\-]{3,}(\.[a-z]+(\.[a-z]+)?)$/',
             $this->validate($request, [
-                'domain' => 'required|regex:/^(http(s)?\/\/:)?(www\.)?[a-zA-Z0-9\-]{3,}(\.[a-z]+(\.[a-z]+)?)$/',
+                'domain' => 'required',
             ]);
             $addToProcessList = (new APIService())->onPageSeoRequest($request->domain);
             if ($addToProcessList['status_code'] == 200) {

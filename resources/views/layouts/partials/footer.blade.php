@@ -43,11 +43,9 @@
                 Services
               </h3>
               <ul>
-                <li><a href="#">Local SEO</a></li>
-                <li><a href="#"> Site Performance</a></li>
-                <li><a href="#">Local listing</a></li>
-                <li><a href="#">Reviews</a></li>
-                <li><a href="#">SEO Audit</a></li>
+                <li><a href="{{route('main')}}">SEO Audit</a></li>
+                <li><a href="{{route('reviews')}}">Reviews</a></li>
+                <li><a href="{{route('competitorsdomain')}}">Competitors Domain</a></li>
               </ul>
             </div>
           </div>
@@ -116,9 +114,10 @@
 
   const validateDomain = () => {
     let domain = $('#domain').val();
-    if(!/^(http(s)?\/\/:)?(www\.)?[a-zA-Z0-9\-]{3,}(\.[a-z]+(\.[a-z]+)?)$/.test(domain) && domain != "")
+    // (!/^(http(s)?\/\/:)?(www\.)?[a-zA-Z0-9\-]{3,}(\.[a-z]+(\.[a-z]+)?)$/.test(domain))
+    if(domain == "")
     {
-      console.log('invalid domain name');
+      console.log('Required Field');
       $('#domain').addClass('hasDomainError');
       $('.errField').removeClass("hidden");
       return false;
@@ -140,6 +139,83 @@
       }
     })
   }
+  const buildAdditionalChecksView = (responseObj, id) => {
+    Object.keys(responseObj).map(function(element, index) {
+
+        $('.seoDetailsDiv').append(`<div class="col-md-4">  <div class="px-4 py-5 mt-5 sm:p-6" style="background: beige;">    <h3 class="text-sm font-medium text-gray-500 truncate">${element}</h3>    <p class="mt-1 text-3xl font-semibold text-gray-600">${responseObj[element]} </p>  </div></div>`);
+    })
+    let detailUrl = "{{route('fullPageStatistics', [':reqId'])}}";
+    detailUrl = detailUrl.replace(":reqId", id);
+    $('.seoDetailsDiv').append(`<div class='row'><div class='col-12'><a href='${detailUrl}'> <button id='additionCheck' class="btn btn-primary btn-lg">View Full Page Statistics</button></a> </div></div>`)
+  }
+
+  const buildAdditionalView = (responseObj) => {
+    let metaDiv = '';
+    let meta = Object.keys(responseObj.Meta).map(index => { metaDiv += `<div class="row"><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Meta[index]}</div></div>`});
+    let hDiv = '';
+    let hTags = Object.keys(responseObj.Htags).map(index => { hDiv += `<div class='row'><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Htags[index].map(el => {return `<span>${el}</span>`})}</div></div>`});
+    let performanceDiv = '';
+    let performance = Object.keys(responseObj['Page Timing']).map(index => { performanceDiv+= `<div class='row'><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj['Page Timing'][index]}</div></div>`});
+
+    let view = `<div class="seoAdditionalDetails">
+      <div class="card">
+        <div class="card-title"><h2>Meta</h2></div>
+        <div class="card-body">
+          ${metaDiv}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h2>Htags</h2></div>
+        <div class="card-body">
+        ${hDiv}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h2>Page Timing</h2></div>
+        <div class="card-body">
+        ${performanceDiv}
+        </div>
+      </div>
+    </div>`;
+
+    $('.seoDetailsDiv').append(view)
+  }
+
+  $(document).on('click', '#additionCheck', function(e){
+    e.preventDefault();
+    let current = $(this);
+    current.hide();
+    let url = current.parent()[0].href;
+
+    $.ajax({
+      type: 'GET',
+      url: url,
+      beforeSend: function () {
+        showLoader();
+      },
+      success: function (response) {
+        if(response?.message) alert(response?.message);
+        if(response.status == 200){
+          buildAdditionalView(response.details);
+          hideLoader();
+          return;
+        }
+        hideLoader();
+
+      },
+      error: function (xhr) {
+        hideLoader();
+        if(xhr.status == 422){
+          alert(xhr.responseJSON.errors.domain[0]);
+          return;
+        }
+        alert("Some Error Occured while processing your request.");
+      },
+      complete: function () {
+        console.log("Complete")
+      }
+    });
+  });
 
   const getPageSummary = (action, requestId) => {
     $.ajax({
@@ -165,6 +241,9 @@
           let statistics = response.statistics;
           $('.seoDetailsDiv').html("")
           buildStatisticsView(statistics)
+          @auth
+          buildAdditionalChecksView(response.extra_stats, response.id)
+          @endif
           hideLoader();
         }else{
           alert(response.message);
@@ -212,6 +291,9 @@
             let statistics = response.statistics;
             $('.seoDetailsDiv').html("")
             buildStatisticsView(statistics)
+            @auth
+            buildAdditionalChecksView(response.extra_stats, response.id)
+            @endif
             hideLoader();
           }else if(response.status_code == 401){
             hideLoader();
@@ -233,5 +315,164 @@
     }
   });
 
+  const buildReviewView = data => {
+    let dataDiv = '';
+    let meta = Object.keys(data).map(index => {
+      if(index == "Rating"){
+        let ratingData = '';
+        Object.keys(data[index]).map(ind => {
+          ratingData += `<span>${ind} => </span>&nbsp&nbsp<span>${data[index][ind]}</span><br />`
+        })
+        dataDiv += `<div class="row"><div class='col-md-3'>${index}</div><div class='col-md-9'>${ratingData}</div></div>`
+      } else{
+
+        dataDiv += `<div class="row"><div class='col-md-3'>${index}</div><div class='col-md-9'>${data[index]}</div></div>`
+      }
+    });
+    $('.seoDetailsDiv').html(`<div class="card">
+            <div class="card-title"><h2>${data.Title}</h2></div>
+            <div class="card-body">
+            ${dataDiv}
+            </div>
+          </div>`)
+  }
+
+  const getReviewSummary = (action, requestId) => {
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': "{{csrf_token()}}"
+      },
+      type: 'POST',
+      url: action,
+      data: {id: requestId},
+      beforeSend: function () {
+        $('.seoScoreDiv').html("")
+        $('.seoDetailsDiv').html("")
+        showLoader();
+      },
+      success: function (response) {
+        if(response.status_code == 202){
+          setTimeout(() => {
+            getReviewSummary(action, requestId)
+          }, 10000)
+          return;
+        }else if(response.status_code == 200){
+          alert(response.message);
+          let statistics = response.statistics;
+          $('.seoDetailsDiv').html("")
+          buildReviewView(response.data)
+          hideLoader();
+        }else{
+          alert(response.message);
+          hideLoader();
+        }
+
+      },
+      error: function (xhr) {
+        hideLoader();
+        if(xhr.status == 422){
+          alert(xhr.responseJSON.errors.domain[0]);
+          return;
+        }
+        alert("Some Error Occured while processing your request.");
+      },
+      complete: function () {
+        console.log("Complete")
+      }
+    });
+  }
+
+  $('#keyword-form').submit(function(e){
+    e.preventDefault();
+    let current = $(this);
+    let action = current[0].action;
+
+    $.ajax({
+      type: 'POST',
+      url: action,
+      data: current.formSerialize(),
+      beforeSend: function () {
+        $('.seoScoreDiv').html("")
+        $('.seoDetailsDiv').html("")
+        showLoader();
+      },
+      success: function (response) {
+        alert(response.message);
+        if(response.status_code == 202){
+          setTimeout(() => {
+            getReviewSummary(action, response.id)
+          }, 10000)
+          return;
+        }else if(response.status_code == 200){
+          let statistics = response.statistics;
+          $('.seoDetailsDiv').html("")
+
+          buildReviewView(response.data)
+          hideLoader();
+        }else if(response.status_code == 401){
+          hideLoader();
+        }
+
+      },
+      error: function (xhr) {
+        hideLoader();
+        if(xhr.status == 422){
+          alert(xhr.responseJSON.errors.domain[0]);
+          return;
+        }
+        alert("Some Error Occured while processing your request.");
+      },
+      complete: function () {
+        console.log("Complete")
+      }
+    });
+  });
+
+  const buildCompetitorView = (data) => {
+    data.forEach(el => $('.seoScoreDiv').append(`<div class="card">
+      <div class="card-title"><h2>${el}</h2></div>
+    </div>`))
+  }
+
+
+  $('#competitor-form').submit(function(e){
+    e.preventDefault();
+    let current = $(this);
+    let action = current[0].action;
+
+    $.ajax({
+      type: 'POST',
+      url: action,
+      data: current.formSerialize(),
+      beforeSend: function () {
+        $('.seoScoreDiv').html("")
+        $('.seoDetailsDiv').html("")
+        showLoader();
+      },
+      success: function (response) {
+        alert(response.message);
+        if(response.status_code == 200){
+          let statistics = response.statistics;
+          $('.seoDetailsDiv').html("")
+          buildCompetitorView(response.data)
+          hideLoader();
+        }else if(response.status_code == 401){
+          hideLoader();
+        }
+
+      },
+      error: function (xhr) {
+        hideLoader();
+        if(xhr.status == 422){
+          alert(xhr.responseJSON.errors.domain[0]);
+          return;
+        }
+        alert("Some Error Occured while processing your request.");
+      },
+      complete: function () {
+        console.log("Complete")
+      }
+    });
+  });
 
   </script>
