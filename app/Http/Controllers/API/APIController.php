@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Validator;
 
 class ApiController extends Controller
@@ -53,8 +54,9 @@ class ApiController extends Controller
                 'message' => $validate->errors(),
             ], 422);
         }
-
-        $user = User::create($request->all());
+        $data = $request->except('confirm_password');
+        $data['password'] = Hash::make($request->password);
+        $user = User::create($data);
 
         if ($user) {
             $token = $user->createToken('visible')->plainTextToken;
