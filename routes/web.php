@@ -18,7 +18,12 @@ Route::get('/', function () {
 })->name('main');
 
 Route::get('/contact', function () {
-    return view('contact');
+    if (auth()->user()) {
+        return view('contactdetails');
+    } else {
+        return view('contact');
+    }
+
 })->name('contact');
 
 Route::post('/contact', function () {

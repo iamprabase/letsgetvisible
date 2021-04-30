@@ -17,8 +17,10 @@
                 <ul id="navigation">
                   <li><a href="{{route('main')}}">Home</a></li>
                   <li><a href="{{route('contact')}}">Contact</a></li>
+                  @auth
                   <li><a href="{{route('reviews')}}">Reviews</a></li>
                   <li><a href="{{route('competitorsdomain')}}">Competitors Domain</a></li>
+                  @endauth
                 </ul>
               </nav>
             </div>

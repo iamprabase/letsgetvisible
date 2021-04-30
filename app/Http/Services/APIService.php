@@ -25,39 +25,9 @@ class APIService
         );
         if (count($post_array) > 0) {
             try {
-                // $result = $client->post('/v3/on_page/task_post', $post_array);
-                // Log::info("Initial Request ", $result);
-                $result = array(
-                    'version' => '0.1.20210304',
-                    'status_code' => 20000,
-                    'status_message' => 'Ok.',
-                    'time' => '0.1243 sec.',
-                    'cost' => 0.00125,
-                    'tasks_count' => 1,
-                    'tasks_error' => 0,
-                    'tasks' => array(
-                        0 => array(
-                            'id' => '04250550-2695-0216-0000-e8e7f5423927',
-                            'status_code' => 20100,
-                            'status_message' => 'Task Created.',
-                            'time' => '0.0047 sec.',
-                            'cost' => 0.00125,
-                            'result_count' => 0,
-                            'path' => array(
-                                0 => 'v3',
-                                1 => 'on_page',
-                                2 => 'task_post',
-                            ),
-                            'data' => array(
-                                'api' => 'on_page',
-                                'function' => 'task_post',
-                                'target' => 'https://www.nepaltour.info/',
-                                'max_crawl_pages' => 10,
-                            ),
-                            'result' => null,
-                        ),
-                    ),
-                );
+                $result = $client->post('/v3/on_page/task_post', $post_array);
+                Log::info(array("Initial Request For SEO ON Page ", $result));
+
                 $client = null;
                 if ($result['status_code'] == 20000) {
                     if ($result['tasks'][0]['status_code'] == 40501) {
@@ -116,6 +86,7 @@ class APIService
         try {
             $client = new RestClient($api_url, null, $username, $password);
             $result = $client->get('/v3/on_page/summary/' . $requestId);
+            Log::info(array("Response For SEO ON Page ", $result));
 
             if ($result["status_code"] == 20000 && $result["status_message"] == "Ok.") {
                 $tasks = $result["tasks"][0];
@@ -226,6 +197,7 @@ class APIService
                 "limit" => 1,
             );
             $page_summary = $client->post('/v3/on_page/pages', $post_array);
+            Log::info(array("Initial Request For Full Page Summary ", $page_summary));
             if ($page_summary['tasks'][0]['status_code'] == 20000 && $page_summary['tasks'][0]['status_message'] == 'Ok.') {
                 $result = $page_summary['tasks'][0]['result'][0]['items'][0];
                 $data = array();
@@ -269,45 +241,8 @@ class APIService
                 "language_name" => "English",
                 "keyword" => mb_convert_encoding($keywords, "UTF-8"),
             );
-            // $keywords_review = $client->post('/v3/business_data/google/my_business_info/task_post', $post_array);
-            $keywords_review = array(
-                'version' => '0.1.20210304',
-                'status_code' => 20000,
-                'status_message' => 'Ok.',
-                'time' => '0.2139 sec.',
-                'cost' => 0.0015,
-                'tasks_count' => 1,
-                'tasks_error' => 0,
-                'tasks' => array(
-                    0 => array(
-                        'id' => '04290927-2695-0242-0000-61eff95cd3bc',
-                        'status_code' => 20100,
-                        'status_message' => 'Task Created.',
-                        'time' => '0.0087 sec.',
-                        'cost' => 0.0015,
-                        'result_count' => 0,
-                        'path' => array(
-                            0 => 'v3',
-                            1 => 'business_data',
-                            2 => 'google',
-                            3 => 'my_business_info',
-                            4 => 'task_post',
-                        ),
-                        'data' => array(
-                            'api' => 'business_data',
-                            'function' => 'my_business_info',
-                            'se' => 'google',
-                            'location_name' => 'New York,New York,United States',
-                            'language_name' => 'English',
-                            'keyword' => 'RustyBrick, Inc.',
-                            'se_type' => 'business_info',
-                            'device' => 'desktop',
-                            'os' => 'windows',
-                        ),
-                        'result' => null,
-                    ),
-                ),
-            );
+            $keywords_review = $client->post('/v3/business_data/google/my_business_info/task_post', $post_array);
+            Log::info(array("Initial Request For Keywords Review ", $keywords_review));
             if ($keywords_review['status_code'] == 20000) {
                 if ($keywords_review['tasks'][0]['status_code'] == 40501) {
                     $response = array(
@@ -365,7 +300,7 @@ class APIService
         try {
             $client = new RestClient($api_url, null, $username, $password);
             $result = $client->get('/v3/business_data/google/my_business_info/task_get/' . $requestId);
-            Log::info($result);
+            Log::info(array("Response For Keywords Review ", $result));
 
             if ($result["status_code"] == 20000 && $result["status_message"] == "Ok.") {
                 if ($result["tasks"][0]["status_code"] == 40602 && $result["tasks"][0]["status_message"] == "Task In Queue.") {
@@ -431,117 +366,8 @@ class APIService
         );
         if (count($post_array) > 0) {
             try {
-                // $result = $client->post('/v3/dataforseo_labs/competitors_domain/live', $post_array);
-                $result = array(
-                    'version' => '0.1.20210304',
-                    'status_code' => 20000,
-                    'status_message' => 'Ok.',
-                    'time' => '1.0325 sec.',
-                    'cost' => 0.02,
-                    'tasks_count' => 1,
-                    'tasks_error' => 0,
-                    'tasks' => array(
-                        0 => array(
-                            'id' => '04291124-2695-0131-0000-f855081eceac',
-                            'status_code' => 20000,
-                            'status_message' => 'Ok.',
-                            'time' => '0.9518 sec.',
-                            'cost' => 0.02,
-                            'result_count' => 1,
-                            'path' => array(
-                                0 => 'v3',
-                                1 => 'dataforseo_labs',
-                                2 => 'competitors_domain',
-                                3 => 'live',
-                            ),
-                            'data' => array(
-                                'api' => 'dataforseo_labs',
-                                'function' => 'competitors_domain',
-                                'target' => 'dataforseo.com',
-                                'language_name' => 'English',
-                                'location_code' => 2840,
-                            ),
-                            'result' => array(
-                                0 => array(
-                                    'target' => 'dataforseo.com',
-                                    'location_code' => 2840,
-                                    'language_code' => 'en',
-                                    'total_count' => 27654,
-                                    'items_count' => 100,
-                                    'items' => array(
-                                        0 => array(
-                                            'domain' => 'dataforseo.com',
-                                            'avg_position' => 49.777010360138135,
-                                            'sum_position' => 100898,
-                                            'intersections' => 2027,
-                                        ),
-                                        1 => array(
-                                            'domain' => 'google.com',
-                                            'avg_position' => 21.502567027952082,
-                                            'sum_position' => 37694,
-                                            'intersections' => 1753,
-                                        ),
-                                        2 => array(
-                                            'domain' => 'moz.com',
-                                            'avg_position' => 28.23065250379363,
-                                            'sum_position' => 37208,
-                                            'intersections' => 1318,
-                                        ),
-                                        3 => array(
-                                            'domain' => 'medium.com',
-                                            'avg_position' => 33.96514522821577,
-                                            'sum_position' => 40928,
-                                            'intersections' => 1205,
-                                        ),
-                                        4 => array(
-                                            'domain' => 'semrush.com',
-                                            'avg_position' => 29.924126172208013,
-                                            'sum_position' => 35101,
-                                            'intersections' => 1173,
-                                        ),
-                                        5 => array(
-                                            'domain' => 'ahrefs.com',
-                                            'avg_position' => 17.882716049382715,
-                                            'sum_position' => 20279,
-                                            'intersections' => 1134,
-                                        ),
-                                        6 => array(
-                                            'domain' => 'wikipedia.org',
-                                            'avg_position' => 39.64127546501329,
-                                            'sum_position' => 44755,
-                                            'intersections' => 1129,
-                                        ),
-                                        7 => array(
-                                            'domain' => 'searchenginejournal.com',
-                                            'avg_position' => 39.111317254174395,
-                                            'sum_position' => 42162,
-                                            'intersections' => 1078,
-                                        ),
-                                        8 => array(
-                                            'domain' => 'neilpatel.com',
-                                            'avg_position' => 35.49008498583569,
-                                            'sum_position' => 37584,
-                                            'intersections' => 1059,
-                                        ),
-                                        9 => array(
-                                            'domain' => 'quora.com',
-                                            'avg_position' => 32.74242424242424,
-                                            'sum_position' => 30254,
-                                            'intersections' => 924,
-                                        ),
-                                        10 => array(
-                                            'domain' => 'stackoverflow.com',
-                                            'avg_position' => 35.67511013215859,
-                                            'sum_position' => 32393,
-                                            'intersections' => 908,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                );
-                Log::info(["Initial Request ", $result]);
+                $result = $client->post('/v3/dataforseo_labs/competitors_domain/live', $post_array);
+                Log::info(array("Initial Request For Domain Competitors ", $result));
                 $data = array();
                 if ($result['status_code'] == 20000 && $result['status_message'] == "Ok.") {
                     if (!empty($result['tasks'][0]['result'])) {
