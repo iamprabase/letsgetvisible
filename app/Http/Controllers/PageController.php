@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Contact;
 use App\Http\Services\APIService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
@@ -40,5 +42,18 @@ class PageController extends Controller
         }
 
         return response()->json($requestSEOScore);
+    }
+
+    public function contact(Request $request)
+    {
+        try {
+            Contact::create($request->except('_token'));
+
+            Session::flash('success', 'Successfully Sent');
+        } catch (\Exceptin $e) {
+            Session::flash('error', $e->getMessage());
+        }
+
+        return back();
     }
 }

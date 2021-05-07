@@ -19,16 +19,15 @@ Route::get('/', function () {
 
 Route::get('/contact', function () {
     if (auth()->user()) {
-        return view('contactdetails');
+        $contacts = \App\Contact::all();
+        return view('contactdetails', compact('contacts'));
     } else {
         return view('contact');
     }
 
 })->name('contact');
 
-Route::post('/contact', function () {
-    dump('contact');
-})->name('contact');
+Route::post('/contact', 'PageController@contact')->name('contact.post');
 
 Auth::routes();
 

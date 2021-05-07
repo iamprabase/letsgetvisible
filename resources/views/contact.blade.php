@@ -59,9 +59,19 @@
     <div class="row">
       <div class="col-12">
         <h2 class="contact-title">Get in Touch</h2>
+        @if(\Session::has('success'))
+          <div class="alert alert-success">
+            <p> {{\Session::get('success')}} <p>
+          </div>
+        @endif
+        @if(\Session::has('error'))
+          <div class="alert alert-error">
+            <p> {{\Session::get('error')}} <p>
+          </div>
+        @endif
       </div>
       <div class="col-lg-8">
-        <form class="form-contact contact_form" action="{{route('contact')}}" method="post" id="contactForm"
+        <form class="form-contact contact_form" action="{{route('contact.post')}}" method="post" id="contactForm"
           novalidate="novalidate">
           @csrf
           <div class="row">
