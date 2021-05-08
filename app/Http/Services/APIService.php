@@ -226,7 +226,7 @@ class APIService
      * @param string $id returned from onPageSeoRequest
      * */
 
-    public function keywordProcess($keywords, $location)
+    public function googleBusinessReviewProcess($keywords, $location)
     {
 
         $api_url = config('dataforseo.API_ENDPOINT');
@@ -237,7 +237,7 @@ class APIService
             $client = new RestClient($api_url, null, $username, $password);
             $post_array = array();
             $post_array[] = array(
-                "location_name" => $location,
+                "location_code" => $location,
                 "language_name" => "English",
                 "keyword" => mb_convert_encoding($keywords, "UTF-8"),
             );
@@ -277,7 +277,6 @@ class APIService
             $response = array(
                 'status_code' => 401,
                 'message' => $e->getMessage(),
-                // 'id' => $result['tasks'][0]['id'],
             );
 
         }
@@ -290,7 +289,7 @@ class APIService
      * @param string $id returned from onPageSeoRequest
      * */
 
-    public function keywordsResponse($requestId)
+    public function googleBusinessReviewResponse($requestId)
     {
 
         $api_url = config('dataforseo.API_ENDPOINT');
@@ -323,6 +322,14 @@ class APIService
                         'id' => $requestId,
                         'data' => array("Title" => $title, 'Description' => $description, "Address" => $address, 'Category' => $category, "Rating" => $rating),
                     );
+                }else{
+                  $response = array(
+                        'status_code' => 202,
+                        'message' => $result['tasks'][0]['status_message'],
+                        'id' => $requestId,
+                        'data' => $result['tasks'][0]['result'],
+                    );
+
                 }
             } else {
                 $response = array(
@@ -362,7 +369,7 @@ class APIService
         $post_array[] = array(
             "target" => $domain,
             "language_name" => "English",
-            "location_code" => 2840,
+            "location_code" => $location,
         );
         if (count($post_array) > 0) {
             try {

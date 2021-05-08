@@ -17,7 +17,7 @@
           <div class="slider_text text-center">
             <div class="text">
               <h3>
-                Keywords Google Reviews
+                Business Google Reviews
               </h3>
               <a class="boxed-btn3" href="#domain">Get Started</a>
             </div>
@@ -41,7 +41,7 @@
     <div class="row">
       <div class="col-xl-12">
         <div class="section_title text-center mb-95" style="text-align: center;color: #747474">
-          <h3>Enter Keywords to get Google Reviews </h3>
+          <h3>Enter Business Name to get Google Reviews </h3>
         </div>
       </div>
     </div>
@@ -49,20 +49,24 @@
       <div class="col-xl-12">
         <div class="row">
           <div class="col-md-12 text-center">
-            <form method="post" action="{{route('getKeyWordReview')}}" id="keyword-form">
+            <form method="post" action="{{route('getGoogleReviews')}}" id="keyword-form">
               @csrf
               <div class="row">
                 <div class="col-md-5">
                   <div class="input-group-prepend">
-                    <input id="keywords" class="form-control search-box input-hg" name="keywords" type="text"
-                      placeholder="keywords" required>
+                    <input id="keywords" class="form-control search-box input-hg" name="business_name" type="text"
+                      placeholder="Business Name" required>
                   </div>
                   <span class="errField hidden" style="color:red">Invalid Domain</span>
                 </div>
                 <div class="col-md-5">
                   <div class="input-group-prepend">
-                    <input id="location" class="form-control search-box input-hg" name="location" type="text"
-                      placeholder="location" required>
+                      <select name="location_code" id="location" class="form-control search-box input-hg" required>
+                        <option> Select Business Location</option>
+                        @foreach($locations as $location)
+                          <option value="{{$location->location_code}}">{{$location->location_name}}{{$location->location_name_parent ? " (".$location->location_name_parent.")" : null}}</option>
+                        @endforeach
+                      </select>
                   </div>
                   <span class="errField hidden" style="color:red">Invalid Domain</span>
                 </div>

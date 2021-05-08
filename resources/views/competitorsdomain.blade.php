@@ -41,7 +41,7 @@
     <div class="row">
       <div class="col-xl-12">
         <div class="section_title text-center mb-95" style="text-align: center;color: #747474">
-          <h3>Enter Keywords to get Google Reviews </h3>
+          <h3>Enter Domain to get its competitors </h3>
         </div>
       </div>
     </div>
@@ -62,8 +62,14 @@
                 </div>
                 <div class="col-md-5">
                   <div class="input-group-prepend">
-                    <input id="location" class="form-control search-box input-hg" name="location" type="text"
-                      placeholder="location" required>
+                    <select name="location_code" id="location" class="form-control search-box input-hg" required>
+                      <option> Select Business Location</option>
+                      @foreach($locations as $location)
+                      <option value="{{$location->location_code}}">
+                        {{$location->location_name}}{{$location->location_name_parent ? " (".$location->location_name_parent.")" : null}}
+                      </option>
+                      @endforeach
+                    </select>
                   </div>
                   <span class="errField hidden" style="color:red">Invalid Domain</span>
                 </div>

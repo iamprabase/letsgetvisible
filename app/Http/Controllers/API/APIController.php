@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\User;
+use Validator;
+use App\Location;
 use Illuminate\Http\Request;
+use app\Http\Services\APIService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Validator;
 
 class ApiController extends Controller
 {
@@ -78,6 +80,15 @@ class ApiController extends Controller
         return response()->json([
             "message" => "User Logged Out.",
         ]);
+    }
+
+    public function locations(Request $request)
+    {
+       $locations = Location::orderBy('location_name', 'asc')->get(['location_code', 'location_name', 'location_name_parent', 'country_iso_code', 'location_type']);
+
+        return response()->json([
+            "locations" => $locations,
+        ], 200);
     }
 
 }

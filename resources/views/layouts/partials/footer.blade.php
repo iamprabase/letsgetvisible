@@ -15,21 +15,11 @@
                 taking control of their online visibility. Its aim is to equip customers with all the knowledge needed
                 to take control of online presence and get the customers and desired sales.
               </p>
-              <div class="socail_links">
+              <div class="">
                 <ul>
                   <li>
-                    <a href="#">
-                      <i class="ti-facebook"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="ti-twitter-alt"></i>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <i class="fa fa-instagram"></i>
+                    <a href="https://letsgetvisible.com.au/">
+                      Visit Site
                     </a>
                   </li>
                 </ul>

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/', function () {
+    $locations = \App\Location::get(['location_code', 'location_name', 'location_name_parent', 'country_iso_code', 'location_type'])->toArray();
+    Log::info($locations);
     return view('home');
 })->name('main');
 
@@ -34,7 +36,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/reviews', 'HomeController@reviews')->name('reviews');
 Route::get('/competitors-domain', 'HomeController@competitorsdomain')->name('competitorsdomain');
-Route::post('/competitors-domain', 'HomeController@getCompetitorsdomain')->name('getCompetitorsdomain');
-Route::post('/reviews', 'HomeController@getKeyWordReview')->name('getKeyWordReview');
-Route::get('/full-page-report/{id}', 'HomeController@fullPageStatistics')->name('fullPageStatistics');
 Route::post('/get-quick-report', 'PageController@index')->name('quickReport');
+Route::get('/full-page-report/{id}', 'HomeController@fullPageStatistics')->name('fullPageStatistics');
+Route::post('/reviews', 'HomeController@getGoogleReviews')->name('getGoogleReviews');
+Route::post('/competitors-domain', 'HomeController@getCompetitorsdomain')->name('getCompetitorsdomain');

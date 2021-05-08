@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\APIService;
+use App\Location;
 use Illuminate\Http\Request;
+use App\Http\Services\APIService;
 
 class HomeController extends Controller
 {
@@ -29,30 +30,14 @@ class HomeController extends Controller
 
     public function reviews()
     {
-        return view('reviews');
+      $locations = Location::orderby('location_name', 'asc')->get();
+        return view('reviews', compact('locations'));
     }
 
     public function competitorsdomain()
     {
-        return view('competitorsdomain');
-    }
-
-    public function getKeyWordReview(Request $request)
-    {
-        if (!$request->has('id')) {
-            $this->validate($request, [
-                'keywords' => 'required',
-            ]);
-            $addToProcessList = (new APIService())->keywordProcess($request->keywords, $request->location);
-            if ($addToProcessList['status_code'] == 200) {
-                $requestaddToProcessList = (new APIService())->keywordsResponse($addToProcessList['id']);
-            } else {
-                $requestaddToProcessList = $addToProcessList;
-            }
-        } else {
-            $requestaddToProcessList = (new APIService())->keywordsResponse($request->id);
-        }
-        return response()->json($requestaddToProcessList);
+      $locations = Location::orderby('location_name', 'asc')->get();
+        return view('competitorsdomain', compact('locations'));
     }
 
     public function fullPageStatistics(Request $request)
@@ -97,10 +82,28 @@ class HomeController extends Controller
         return view('onpagedetailreport')->with($data);
     }
 
+    public function getGoogleReviews(Request $request)
+    {
+        if (!$request->has('id')) {
+            $this->validate($request, [
+                'business_name' => 'required',
+            ]);
+            $addToProcessList = (new APIService())->googleBusinessReviewProcess($request->business_name, $request->location_code);
+            if ($addToProcessList['status_code'] == 200) {
+                $requestaddToProcessList = (new APIService())->googleBusinessReviewResponse($addToProcessList['id']);
+            } else {
+                $requestaddToProcessList = $addToProcessList;
+            }
+        } else {
+            $requestaddToProcessList = (new APIService())->googleBusinessReviewResponse($request->id);
+        }
+        return response()->json($requestaddToProcessList);
+    }
+
     public function getCompetitorsdomain(Request $request)
     {
 
-        $requestaddToProcessList = (new APIService())->competitorDomain($request->domain, $request->location);
+        $requestaddToProcessList = (new APIService())->competitorDomain($request->domain, $request->location_code);
         return response()->json($requestaddToProcessList);
     }
 }
