@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/', function () {
-    $locations = \App\Location::get(['location_code', 'location_name', 'location_name_parent', 'country_iso_code', 'location_type'])->toArray();
-    Log::info($locations);
     return view('home');
 })->name('main');
 
