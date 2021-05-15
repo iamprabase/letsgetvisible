@@ -141,9 +141,12 @@
 
   const buildAdditionalView = (responseObj) => {
     let metaDiv = '';
-    let meta = Object.keys(responseObj.Meta).map(index => { metaDiv += `<div class="row"><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Meta[index]}</div></div>`});
+    let meta = null;
+    if(responseObj.Meta) meta = Object.keys(responseObj.Meta).map(index => { metaDiv += `<div class="row"><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Meta[index]}</div></div>`});
     let hDiv = '';
-    let hTags = Object.keys(responseObj.Htags).map(index => { hDiv += `<div class='row'><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Htags[index].map(el => {return `<span>${el}</span>`})}</div></div>`});
+    let hTags = null;
+    if(responseObj.Htags) hTags = Object.keys(responseObj.Htags).map(index => { hDiv += `<div class='row'><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj.Htags[index].map(el => {return `<span>${el}</span>`})}</div></div>`});
+    
     let performanceDiv = '';
     let performance = Object.keys(responseObj['Page Timing']).map(index => { performanceDiv+= `<div class='row'><div class='col-md-3'>${index}</div><div class='col-md-9'>${responseObj['Page Timing'][index]}</div></div>`});
 
